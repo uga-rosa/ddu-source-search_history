@@ -1,3 +1,3 @@
 # ddu-source-command_history
 
-Command line history source for ddu.vim
+Search history source for ddu.vim

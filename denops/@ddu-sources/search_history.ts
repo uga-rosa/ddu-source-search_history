@@ -19,7 +19,7 @@ export type ActionData = {
 type Params = Record<never, never>;
 
 export class Source extends BaseSource<Params> {
-  kind = "command_history";
+  kind = "search_history";
   gather(args: {
     denops: Denops;
     sourceParams: Params;
@@ -28,10 +28,10 @@ export class Source extends BaseSource<Params> {
       async start(controller) {
         const items: Item<ActionData>[] = [];
         try {
-          const histnr = await fn.histnr(args.denops, "cmd") as number;
+          const histnr = await fn.histnr(args.denops, "search") as number;
           const hists = await gather(args.denops, async (denops) => {
             for (let i = 1; i <= histnr; i++) {
-              await fn.histget(denops, "cmd", i);
+              await fn.histget(denops, "search", i);
             }
           }) as string[];
           for (let i = 1; i <= histnr; i++) {
@@ -56,14 +56,15 @@ export class Source extends BaseSource<Params> {
     execute: async ({ denops, items }: ActionArguments<Params>) => {
       const action = items[0]?.action as ActionData;
       await batch(denops, async (denops) => {
-        await fn.histadd(denops, "cmd", action.command);
-        await denops.cmd(action.command);
+        await fn.histadd(denops, "search", action.command);
+        await denops.cmd("let @/ = l:cmd", { cmd: action.command });
+        await denops.call("feedkeys", "n", "n");
       });
       return Promise.resolve(ActionFlags.None);
     },
     edit: async ({ denops, items }: ActionArguments<Params>) => {
       const action = items[0]?.action as ActionData;
-      await fn.feedkeys(denops, `:${action.command}`, "n");
+      await fn.feedkeys(denops, `/${action.command}`, "n");
       return Promise.resolve(ActionFlags.None);
     },
     delete: async ({ denops, items }: ActionArguments<Params>) => {
@@ -71,7 +72,7 @@ export class Source extends BaseSource<Params> {
         for (const item of items) {
           const action = item?.action as ActionData;
           if (item.action) {
-            await fn.histdel(denops, "cmd", action.index);
+            await fn.histdel(denops, "search", action.index);
           }
         }
       });
