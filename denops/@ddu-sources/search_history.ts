@@ -10,6 +10,7 @@ import {
   fn,
   gather,
 } from "https://deno.land/x/ddu_vim@v2.8.4/deps.ts";
+import { register } from "https://deno.land/x/denops_std@v4.3.3/variable/register.ts";
 
 export type ActionData = {
   command: string;
@@ -57,8 +58,8 @@ export class Source extends BaseSource<Params> {
       const action = items[0]?.action as ActionData;
       await batch(denops, async (denops) => {
         await fn.histadd(denops, "search", action.command);
-        await denops.cmd("let @/ = l:cmd", { cmd: action.command });
-        await denops.call("feedkeys", "n", "n");
+        await register.set(denops, "/", action.command);
+        await fn.feedkeys(denops, "n", "n");
       });
       return Promise.resolve(ActionFlags.None);
     },
