@@ -12,24 +12,25 @@ export class Source extends BaseSource<Params> {
   }): ReadableStream<Item<ActionData>[]> {
     return new ReadableStream({
       async start(controller) {
-        const items: Item<ActionData>[] = [];
         try {
-          const histnr = await fn.histnr(args.denops, "search") as number;
-          const hists = await Promise.all(
-            [...Array(histnr)].map((_, i) =>
-              fn.histget(args.denops, "search", i + 1)
-            ),
-          );
-          for (let i = 1; i <= histnr; i++) {
-            const hist = hists[i - 1];
-            if (hist.trim().length) {
-              items.push({
-                word: hist,
-                action: { command: hist, index: i },
-              });
-            }
+          const histnr = await fn.histnr(args.denops, "search");
+          if (histnr > 0) {
+            const hists = await Promise.all(
+              [...Array(histnr)].map((_, i) =>
+                fn.histget(args.denops, "search", i + 1)
+              ),
+            );
+            const items: Item<ActionData>[] = hists
+              .filter((hist) => hist.trim() !== "")
+              .map((hist, i) => {
+                return {
+                  word: hist,
+                  action: { command: hist, index: i + 1 },
+                };
+              })
+              .reverse();
+            controller.enqueue(items);
           }
-          controller.enqueue(items.reverse());
         } catch (e) {
           console.error(e);
         }
