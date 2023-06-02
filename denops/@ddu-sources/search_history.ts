@@ -1,5 +1,9 @@
 import { BaseSource, Item } from "https://deno.land/x/ddu_vim@v2.9.2/types.ts";
-import { Denops, fn } from "https://deno.land/x/ddu_vim@v2.9.2/deps.ts";
+import {
+  collect,
+  Denops,
+  fn,
+} from "https://deno.land/x/ddu_vim@v2.9.2/deps.ts";
 import { ActionData } from "../@ddu-kinds/search_history.ts";
 
 type Params = Record<never, never>;
@@ -15,11 +19,11 @@ export class Source extends BaseSource<Params> {
         try {
           const histnr = await fn.histnr(args.denops, "search");
           if (histnr > 0) {
-            const hists = await Promise.all(
-              [...Array(histnr)].map((_, i) =>
-                fn.histget(args.denops, "search", i + 1)
-              ),
-            );
+            const hists = await collect(args.denops, (denops) => {
+              return [...Array(histnr)].map((_, i) =>
+                fn.histget(denops, "search", i + 1)
+              );
+            });
             const items: Item<ActionData>[] = hists
               .filter((hist) => hist.trim() !== "")
               .map((hist, i) => {
