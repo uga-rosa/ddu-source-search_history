@@ -7,7 +7,7 @@ import {
 import { batch, fn } from "https://deno.land/x/ddu_vim@v3.5.1/deps.ts";
 import { register } from "https://deno.land/x/denops_std@v5.0.1/variable/register.ts";
 
-type Params = Record<string | number | symbol, never>;
+type Params = Record<PropertyKey, never>;
 
 export type ActionData = {
   command: string;

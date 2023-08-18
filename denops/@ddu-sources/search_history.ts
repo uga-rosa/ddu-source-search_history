@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/x/ddu_vim@v3.5.1/deps.ts";
 import { ActionData } from "../@ddu-kinds/search_history.ts";
 
-type Params = Record<string | number | symbol, never>;
+type Params = Record<PropertyKey, never>;
 
 export class Source extends BaseSource<Params> {
   kind = "search_history";
