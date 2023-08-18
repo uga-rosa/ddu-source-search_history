@@ -3,9 +3,9 @@ import {
   ActionFlags,
   Actions,
   BaseKind,
-} from "https://deno.land/x/ddu_vim@v2.9.2/types.ts";
-import { batch, fn } from "https://deno.land/x/ddu_vim@v2.9.2/deps.ts";
-import { register } from "https://deno.land/x/denops_std@v5.0.0/variable/register.ts";
+} from "https://deno.land/x/ddu_vim@v3.5.1/types.ts";
+import { batch, fn } from "https://deno.land/x/ddu_vim@v3.5.1/deps.ts";
+import { register } from "https://deno.land/x/denops_std@v5.0.1/variable/register.ts";
 
 type Params = Record<never, never>;
 

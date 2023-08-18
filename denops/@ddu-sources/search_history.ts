@@ -1,9 +1,9 @@
-import { BaseSource, Item } from "https://deno.land/x/ddu_vim@v2.9.2/types.ts";
+import { BaseSource, Item } from "https://deno.land/x/ddu_vim@v3.5.1/types.ts";
 import {
   collect,
   Denops,
   fn,
-} from "https://deno.land/x/ddu_vim@v2.9.2/deps.ts";
+} from "https://deno.land/x/ddu_vim@v3.5.1/deps.ts";
 import { ActionData } from "../@ddu-kinds/search_history.ts";
 
 type Params = Record<never, never>;
